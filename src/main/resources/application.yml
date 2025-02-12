@@ -1,0 +1,52 @@
+server:
+  error:
+    include-message: always
+  port: 8085
+jwt:
+  secret: oyVEQth8OzBiVJRv1y3P+MY4ksqpYeEImi16C0An3/oMecLIl0LWmHRRDrHznal+pKcbYIhl+fiPyIQfHopToAO9tDNl7qMRD2YtENKTYjWp5yh7vznG3wsLWBoeqaZFGbNBeo2QnvoUbj9eyy1Jhk5P6XjhgXwjIl2nnydvQvo8g/KwerG9eyKOynRXCf0RMVFGlTaCPqeBHXTz4kioWa9OxQ3vK2/pDA/tKnmg7W+yfvWX32hY12+TUn7DIpCWB7RB+x/Lo5pMGnTFqrubrwfaZ+kTQ6NYDhZ6+Z0YuxdYgqu+vN+drSLgL0hbF3n3xsVENiEQZ0hfTCdQEO6knx5QEL/QWK3NQ/iREUYyJQg=
+spring:
+  application:
+    name: smatech-payment-service
+
+  datasource:
+    password: root
+    url: jdbc:postgresql://localhost:5432/smatech-payments
+    username: postgres
+  servlet:
+    multipart:
+      max-file-size: 11122780
+      max-request-size: 11122780
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /swagger
+web:
+  cors:
+    allowed-origins: "http://localhost:4200"
+    allowed-methods: GET, POST, PATCH, PUT, DELETE, OPTIONS, HEAD
+    max-age: 3600
+    allowed-headers: "Requestor-Type"
+    exposed-headers: "X-Get-Header"
+folder-path: src/main/resources/static/uploads/
+
+service:
+  auth:
+    url: http://SMATECH-AUTHENTICATION-SERVICE/api/v1/auth/get-user-by-token?token=
+  store:
+    url: http://SMATECH-STORE-SERVICE/api/v1/
+
+paypal:
+  client-id: AWYWCpRDlyHRL4u_RHVwtlOuuPJW9TdYSmejQo2LYzWaYT8yKBLvRwDbyYIVNbrM7Kkz4ipJ7NRrhjMb
+  secret: EHQm1BV3fo0Cd26-kg1Wvq51rBFtv-DPu3yGFyApfBTaZPqDW5K6dFogVfVYesbAJ8JY62P_Pe8aX_J8
+  mode: sandbox
+  return-url: http://localhost:8082/api/v1/paypal/success
+  cancel-url: http://localhost:8082/api/v1/paypal/cancel
