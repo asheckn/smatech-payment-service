@@ -50,3 +50,7 @@ paypal:
   mode: sandbox
   return-url: http://localhost:8082/api/v1/paypal/success
   cancel-url: http://localhost:8082/api/v1/paypal/cancel
+
+eureka:
+  instance:
+    prefer-ip-address: true
