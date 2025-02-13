@@ -64,8 +64,8 @@ public class PayPalService {
         orderRequest.put("purchase_units", List.of(purchaseUnit));
 
         Map<String, String> redirectUrls = new HashMap<>();
-        redirectUrls.put("return_url", config.getReturnUrl());
-        redirectUrls.put("cancel_url", config.getCancelUrl());
+        redirectUrls.put("return_url", request.getReturnUrl());
+        redirectUrls.put("cancel_url", request.getCancelUrl());
         orderRequest.put("application_context", redirectUrls);
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(orderRequest, headers);
@@ -124,13 +124,21 @@ public class PayPalService {
 
     }
 
-    public Boolean capturePayment(String payPalOrderId) {
+    public Payment capturePayment(String payPalOrderId) {
         String accessToken = getAccessToken();
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        //Check if payment exists and is complete and return that instead
+        Payment paymentCheck = paymentRepository.findPaymentByPayPalOrderId(payPalOrderId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payment not found")
+        );
+        if(paymentCheck != null && paymentCheck.getPaymentStatus() == PaymentStatus.COMPLETE){
+            return paymentCheck;
+        }
+
 
         ResponseEntity<PayPalOrderResponse> response = restTemplate.postForEntity(
                 config.getBaseUrl() + "/v2/checkout/orders/" + payPalOrderId + "/capture",
@@ -146,13 +154,15 @@ public class PayPalService {
         if(Objects.equals(response.getBody().getStatus(), "COMPLETED")){
             payment.setPaymentStatus(PaymentStatus.COMPLETE);
             payment.setPayPalOrderStatus(response.getBody().getStatus());
+            paymentRepository.save(payment);
             //Update the order service
             restTemplateService.payOrder(payment.getOrderCode());
-            return true;
+            return payment;
         }else {
             payment.setPaymentStatus(PaymentStatus.FAILED);
             payment.setPayPalOrderStatus(response.getBody().getStatus());
-            return false;
+            paymentRepository.save(payment);
+            return payment;
         }
 
     }

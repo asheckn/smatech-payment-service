@@ -13,4 +13,8 @@ public class PaymentRequest {
 
     private String orderCode;
 
+    private String returnUrl;
+
+    private String cancelUrl;
+
 }
