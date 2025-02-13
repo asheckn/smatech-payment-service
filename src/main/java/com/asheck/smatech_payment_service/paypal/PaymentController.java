@@ -1,5 +1,6 @@
 package com.asheck.smatech_payment_service.paypal;
 
+import com.asheck.smatech_payment_service.payment.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +19,10 @@ public class PaymentController {
     }
 
     @GetMapping("/success")
-    public ResponseEntity<String> paymentSuccess(@RequestParam("token") String orderId) {
-        boolean success = payPalService.capturePayment(orderId);
-        return success ?
-                ResponseEntity.ok("Payment captured successfully") :
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Payment capture failed");
+    public ResponseEntity<?> paymentSuccess(@RequestParam("token") String orderId) {
+        Payment payment = payPalService.capturePayment(orderId);
+        return
+                ResponseEntity.ok(payment);
     }
 
     @GetMapping("/cancel")
