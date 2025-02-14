@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/payments")
 @RequiredArgsConstructor
@@ -23,6 +25,18 @@ public class PaymentController {
         Payment payment = payPalService.capturePayment(orderId);
         return
                 ResponseEntity.ok(payment);
+    }
+
+    @GetMapping("/get-all-payments")
+    public ResponseEntity<?> getAllPayments() {
+        List<Payment> payments = payPalService.getAllPayments();
+        return ResponseEntity.ok(payments);
+    }
+
+    @GetMapping("/get-payment-by-customerId/{customerId}")
+    public ResponseEntity<?> getPaymentsByCustomerId(@PathVariable("customerId") Long customerId) {
+        List<Payment> payment = payPalService.getAllPaymentsByCustomerId(customerId);
+        return ResponseEntity.ok(payment);
     }
 
     @GetMapping("/cancel")

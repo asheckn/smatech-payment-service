@@ -185,4 +185,17 @@ public class PayPalService {
 
         return (String) response.getBody().get("access_token");
     }
+
+    public List<Payment> getAllPayments(){
+        return paymentRepository.findAll();
+    }
+
+    public List<Payment> getAllPaymentsByCustomerId(long customerId){
+        return paymentRepository.findPaymentByCustomerId(customerId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payments not found")
+        );
+    }
+
+
+
 }
