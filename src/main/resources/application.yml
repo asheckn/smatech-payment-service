@@ -10,7 +10,7 @@ spring:
 
   datasource:
     password: root
-    url: jdbc:postgresql://localhost:5432/smatech-payments
+    url: {SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/smatech-payments}
     username: postgres
   servlet:
     multipart:
@@ -33,10 +33,10 @@ springdoc:
 
 web:
   cors:
-    allowed-origins: "http://localhost:4200"
+    allowed-origins: "*"
     allowed-methods: GET, POST, PATCH, PUT, DELETE, OPTIONS, HEAD
     max-age: 3600
-    allowed-headers: "Requestor-Type"
+    allowed-headers: "*"
     exposed-headers: "X-Get-Header"
 folder-path: src/main/resources/static/uploads/
 
@@ -54,5 +54,9 @@ paypal:
   cancel-url: http://localhost:8082/api/v1/paypal/cancel
 
 eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
   instance:
+    hostname: ${HOSTNAME}
     prefer-ip-address: true
