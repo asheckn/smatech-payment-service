@@ -3,7 +3,7 @@ networks:
     external: true
 
 services:
-  store-service:
+  payment-service:
     image: payment-service:latest
     build:
       context: .
